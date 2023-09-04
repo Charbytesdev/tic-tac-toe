@@ -44,3 +44,11 @@ body {
 .board-position:nth-last-child(-n + 3) {
   border-bottom: none;
 }
+
+.board-position {
+  font-size: 10rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  place-items: center;
+}
