@@ -1,0 +1,46 @@
+*,
+::after,
+::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.board {
+  width: 40rem;
+  height: 40rem;
+  display: grid;
+  grid-template: 1fr 1fr 1fr/ 1fr 1fr 1fr;
+}
+
+.board-position {
+  border: solid;
+}
+
+.board-position:nth-child(-n + 3) {
+  border-top: none;
+}
+
+.board-position:nth-child(3n + 1) {
+  border-left: none;
+}
+
+.board-position:nth-child(3n) {
+  border-right: none;
+}
+
+.board-position:nth-last-child(-n + 3) {
+  border-bottom: none;
+}
