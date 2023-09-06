@@ -1,36 +1,58 @@
+const boardDisplay = (() => {
+  const _board = document.querySelectorAll(".board-position");
 
+  const getBoard = () => _board;
+  const setBoard = (board) => {
+    _board = board;
+  };
 
+  const refreshBoardDisplay = () =>
+    _board.forEach((position, index) => {
+      position.textContent = _board[index];
+    });
+
+  const insertAt = (position, mark) => {
+    _board.item(position).textContent = mark;
+  };
+
+  const clear = () => {
+    _board.forEach((position) => (position.textContent = ""));
+  };
+
+  return { getBoard, setBoard, insertAt, refreshBoardDisplay, clear };
+})();
 
 const gameBoard = (() => {
-  const _boardPositions = document.querySelectorAll(".board-position");
-  let _arrayBoard = new Array(9);
-  const getCurrentBoard = () => _currentBoard;
-  const setCurrentBoard = (board) => {
-    _arrayBoard = board;
+  let _board = new Array(9);
+
+  const getBoard = () => _board;
+  const setBoard = (board) => {
+    _board = board;
   };
+
   const refreshGameBoard = () =>
-    _boardPositions.forEach((position, index) => {
-      position.textContent = _arrayBoard[index];
+    _board.forEach((position, index) => {
+      position.textContent = _board[index];
     });
 
   const clear = () => {
-    _boardPositions.forEach((position) => (position.textContent = ""));
+    _board = new Array(9);
   };
+
   const insertAt = (position, mark) => {
-    _arrayBoard[position] = mark;
-    _boardPositions.item(position).textContent = mark;
+    _board[position] = mark;
   };
 
   return {
-    getCurrentBoard,
-    setCurrentBoard,
+    getBoard,
+    setBoard,
     refreshGameBoard,
     clear,
     insertAt,
   };
 })();
 
-gameBoard.insertAt("2", "x");
+boardDisplay.insertAt("2", "x");
 
 const playerFactory = (name, mark) => {
   let _name = name;
