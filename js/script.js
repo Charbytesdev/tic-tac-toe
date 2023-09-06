@@ -94,23 +94,27 @@ const gameController = (() => {
     _currentlyPlaying === _playerOne
       ? (_currentlyPlaying = _playerTwo)
       : (_currentlyPlaying = _playerOne);
-    console.log(_currentlyPlaying.getName());
   };
   const playTurn = (position) => {
-    if (gameBoard.getBoard[position]) return;
+    if (gameBoard.getBoard()[position]) return;
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
     boardDisplay.insertAt(position, _currentlyPlaying.getMark());
   };
+
   const startGame = () => {
     setPlayerOne("boss", "x");
     setPlayerTwo("noob", "o");
     _currentlyPlaying = _playerOne;
-    let i = 0;
-    while (gameBoard.getSize() < 9) {
-      playTurn(i);
-      i++;
-      changeTurn();
-    }
+
+    boardDisplay.getBoard().forEach((position) => {
+      position.addEventListener("click", () => {
+        const positionIndex = position.classList[1].split("-")[1] - 1;
+        if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
+          playTurn(positionIndex);
+          changeTurn();
+        }
+      });
+    });
   };
   return { setPlayerOne, setPlayerTwo, changeTurn, playTurn, startGame };
 })();
