@@ -1,3 +1,61 @@
+const Player = (name, mark) => {
+  let _name = name;
+  let _mark = mark;
+  let _score = 0;
+  const getName = () => _name;
+  const getMark = () => _mark;
+  const getScore = () => _score;
+  const increaseScore = () => {
+    _score++;
+  };
+  const play = (position) => {
+    gameBoard.insertAt(position, mark);
+    boardDisplay.insertAt(position, mark);
+  };
+  return {
+    getName,
+    getMark,
+    getScore,
+    increaseScore,
+    play,
+  };
+};
+
+const gameBoard = (() => {
+  let _board = new Array(9);
+  let _size = 0;
+
+  const getBoard = () => _board;
+  const setBoard = (board) => {
+    _board = board;
+  };
+  const getSize = () => _size;
+
+  const refreshGameBoard = () =>
+    _board.forEach((position, index) => {
+      position.textContent = _board[index];
+    });
+
+  const clear = () => {
+    _board = new Array(9);
+    _size = 0;
+  };
+
+  const insertAt = (position, mark) => {
+    _board[position] = mark;
+    _size++;
+  };
+
+  return {
+    getBoard,
+    setBoard,
+    getSize,
+    refreshGameBoard,
+    clear,
+    insertAt,
+  };
+})();
+
 const boardDisplay = (() => {
   const _board = document.querySelectorAll(".board-position");
 
@@ -22,52 +80,39 @@ const boardDisplay = (() => {
   return { getBoard, setBoard, insertAt, refreshBoardDisplay, clear };
 })();
 
-const gameBoard = (() => {
-  let _board = new Array(9);
-
-  const getBoard = () => _board;
-  const setBoard = (board) => {
-    _board = board;
+const gameController = (() => {
+  let _playerOne = Player(null, null);
+  let _playerTwo = Player(null, null);
+  let _currentlyPlaying = Player(null, null);
+  const setPlayerOne = (name, mark) => {
+    _playerOne = Player(name, mark);
   };
-
-  const refreshGameBoard = () =>
-    _board.forEach((position, index) => {
-      position.textContent = _board[index];
-    });
-
-  const clear = () => {
-    _board = new Array(9);
+  const setPlayerTwo = (name, mark) => {
+    _playerTwo = Player(name, mark);
   };
-
-  const insertAt = (position, mark) => {
-    _board[position] = mark;
+  const changeTurn = () => {
+    _currentlyPlaying === _playerOne
+      ? (_currentlyPlaying = _playerTwo)
+      : (_currentlyPlaying = _playerOne);
+    console.log(_currentlyPlaying.getName());
   };
-
-  return {
-    getBoard,
-    setBoard,
-    refreshGameBoard,
-    clear,
-    insertAt,
+  const playTurn = (position) => {
+    if (gameBoard.getBoard[position]) return;
+    gameBoard.insertAt(position, _currentlyPlaying.getMark());
+    boardDisplay.insertAt(position, _currentlyPlaying.getMark());
   };
+  const startGame = () => {
+    setPlayerOne("boss", "x");
+    setPlayerTwo("noob", "o");
+    _currentlyPlaying = _playerOne;
+    let i = 0;
+    while (gameBoard.getSize() < 9) {
+      playTurn(i);
+      i++;
+      changeTurn();
+    }
+  };
+  return { setPlayerOne, setPlayerTwo, changeTurn, playTurn, startGame };
 })();
 
-boardDisplay.insertAt("2", "x");
-
-const playerFactory = (name, mark) => {
-  let _name = name;
-  let _mark = mark;
-  let _score = 0;
-  const getName = () => _name;
-  const getMark = () => _mark;
-  const getScore = () => _score;
-  const increaseScore = () => {
-    _score++;
-  };
-  return {
-    getName,
-    getMark,
-    getScore,
-    increaseScore,
-  };
-};
+gameController.startGame();
