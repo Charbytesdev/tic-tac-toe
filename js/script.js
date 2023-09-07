@@ -10,7 +10,7 @@ const Player = (name, mark) => {
   };
   const play = (position) => {
     gameBoard.insertAt(position, mark);
-    boardDisplay.insertAt(position, mark);
+    displayController.insertAt(position, mark);
   };
   return {
     getName,
@@ -56,7 +56,7 @@ const gameBoard = (() => {
   };
 })();
 
-const boardDisplay = (() => {
+const displayController = (() => {
   const _board = document.querySelectorAll(".board-position");
 
   const getBoard = () => _board;
@@ -64,7 +64,7 @@ const boardDisplay = (() => {
     _board = board;
   };
 
-  const refreshBoardDisplay = () =>
+  const refreshdisplayController = () =>
     _board.forEach((position, index) => {
       position.textContent = _board[index];
     });
@@ -77,7 +77,7 @@ const boardDisplay = (() => {
     _board.forEach((position) => (position.textContent = ""));
   };
 
-  return { getBoard, setBoard, insertAt, refreshBoardDisplay, clear };
+  return { getBoard, setBoard, insertAt, refreshdisplayController, clear };
 })();
 
 const gameController = (() => {
@@ -96,9 +96,8 @@ const gameController = (() => {
       : (_currentlyPlaying = _playerOne);
   };
   const playTurn = (position) => {
-    if (gameBoard.getBoard()[position]) return;
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
-    boardDisplay.insertAt(position, _currentlyPlaying.getMark());
+    displayController.insertAt(position, _currentlyPlaying.getMark());
   };
 
   const startGame = () => {
@@ -106,7 +105,7 @@ const gameController = (() => {
     setPlayerTwo("noob", "o");
     _currentlyPlaying = _playerOne;
 
-    boardDisplay.getBoard().forEach((position) => {
+    displayController.getBoard().forEach((position) => {
       position.addEventListener("click", () => {
         const positionIndex = position.classList[1].split("-")[1] - 1;
         if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
