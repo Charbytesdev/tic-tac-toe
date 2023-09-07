@@ -8,8 +8,11 @@
 
 body,
 html {
+  background-color: #181a1b;
+  border-color: #736b5e;
   height: 100%;
   width: 100%;
+  color: #e8e6e3;
 }
 
 body {
