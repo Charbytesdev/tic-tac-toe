@@ -58,10 +58,21 @@ const gameBoard = (() => {
 
 const displayController = (() => {
   const _board = document.querySelectorAll(".board-position");
-
+  const _playerScores = document.querySelectorAll(".player-score");
   const getBoard = () => _board;
   const setBoard = (board) => {
     _board = board;
+  };
+
+  const increaseScore = (playerIndex) => {
+    _playerScores.item(playerIndex).textContent =
+      parseInt(_playerScores.item(playerIndex).textContent) + 1;
+  };
+
+  const clearScores = () => {
+    _playerScores.forEach((playerScore) => {
+      playerScore.textContent = 0;
+    });
   };
 
   const refreshDisplayController = () =>
@@ -73,8 +84,14 @@ const displayController = (() => {
     _board.item(position).textContent = mark;
   };
 
-  const clear = () => {
+  const clearBoard = () => {
     _board.forEach((position) => (position.textContent = ""));
+  };
+
+  const addEventListeners = () => {
+    _board.forEach((position) => {
+      position.addEventListener("click", () => clickHandlerBoard(position));
+    });
   };
 
   const clickHandlerBoard = (position) => {
@@ -83,7 +100,7 @@ const displayController = (() => {
       gameController.playTurn(positionIndex);
       const winner = gameController.checkWinner();
       if (winner) {
-        console.log(winner);
+        increaseScore(parseInt(winner) - 1);
       }
       gameController.changeTurn();
     }
@@ -95,7 +112,8 @@ const displayController = (() => {
     insertAt,
     refreshDisplayController,
     clickHandlerBoard,
-    clear,
+    clearBoard,
+    addEventListeners,
   };
 })();
 
@@ -139,21 +157,18 @@ const gameController = (() => {
         board[win[0]] === board[win[1]] &&
         board[win[1]] === board[win[2]]
       ) {
+        _currentlyPlaying.increaseScore();
         return _currentlyPlaying.getName();
       }
     }
   };
 
   const startGame = () => {
-    setPlayerOne("boss", "x");
-    setPlayerTwo("noob", "o");
+    setPlayerOne("1", "x");
+    setPlayerTwo("2", "o");
     _currentlyPlaying = _playerOne;
 
-    displayController.getBoard().forEach((position) => {
-      position.addEventListener("click", () =>
-        displayController.clickHandlerBoard(position)
-      );
-    });
+    displayController.addEventListeners();
   };
 
   return {
