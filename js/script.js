@@ -64,7 +64,7 @@ const displayController = (() => {
     _board = board;
   };
 
-  const refreshdisplayController = () =>
+  const refreshDisplayController = () =>
     _board.forEach((position, index) => {
       position.textContent = _board[index];
     });
@@ -77,7 +77,26 @@ const displayController = (() => {
     _board.forEach((position) => (position.textContent = ""));
   };
 
-  return { getBoard, setBoard, insertAt, refreshdisplayController, clear };
+  const clickHandlerBoard = (position) => {
+    const positionIndex = position.classList[1].split("-")[1] - 1;
+    if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
+      gameController.playTurn(positionIndex);
+      const winner = gameController.checkWinner();
+      if (winner) {
+        console.log(winner);
+      }
+      gameController.changeTurn();
+    }
+  };
+
+  return {
+    getBoard,
+    setBoard,
+    insertAt,
+    refreshDisplayController,
+    clickHandlerBoard,
+    clear,
+  };
 })();
 
 const gameController = (() => {
@@ -99,6 +118,31 @@ const gameController = (() => {
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
     displayController.insertAt(position, _currentlyPlaying.getMark());
   };
+  const checkWinner = () => {
+    const winnerCombs = [
+      //rows
+      [0, 1, 2],
+      [3, 4, 5],
+      [6, 7, 8],
+      //cols
+      [0, 3, 6],
+      [1, 4, 7],
+      [2, 5, 8],
+      //diag
+      [0, 4, 8],
+      [2, 4, 6],
+    ];
+    const board = gameBoard.getBoard();
+    for (const win of winnerCombs) {
+      if (
+        board[win[0]] != undefined &&
+        board[win[0]] === board[win[1]] &&
+        board[win[1]] === board[win[2]]
+      ) {
+        return _currentlyPlaying.getName();
+      }
+    }
+  };
 
   const startGame = () => {
     setPlayerOne("boss", "x");
@@ -106,16 +150,20 @@ const gameController = (() => {
     _currentlyPlaying = _playerOne;
 
     displayController.getBoard().forEach((position) => {
-      position.addEventListener("click", () => {
-        const positionIndex = position.classList[1].split("-")[1] - 1;
-        if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
-          playTurn(positionIndex);
-          changeTurn();
-        }
-      });
+      position.addEventListener("click", () =>
+        displayController.clickHandlerBoard(position)
+      );
     });
   };
-  return { setPlayerOne, setPlayerTwo, changeTurn, playTurn, startGame };
+
+  return {
+    setPlayerOne,
+    setPlayerTwo,
+    changeTurn,
+    playTurn,
+    startGame,
+    checkWinner,
+  };
 })();
 
 gameController.startGame();
