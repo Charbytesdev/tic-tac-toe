@@ -8,16 +8,12 @@ const Player = (name, mark) => {
   const increaseScore = () => {
     _score++;
   };
-  const play = (position) => {
-    gameBoard.insertAt(position, mark);
-    displayController.insertAt(position, mark);
-  };
+
   return {
     getName,
     getMark,
     getScore,
     increaseScore,
-    play,
   };
 };
 
@@ -60,10 +56,6 @@ const displayController = (() => {
   const _board = document.querySelectorAll(".board-position");
   const _boardElement = document.getElementById("board");
   const _playerScores = document.querySelectorAll(".player-score");
-  const getBoard = () => _board;
-  const setBoard = (board) => {
-    _board = board;
-  };
 
   const increaseScore = (playerIndex) => {
     _playerScores.item(playerIndex).textContent =
@@ -71,23 +63,17 @@ const displayController = (() => {
   };
 
   const clearScores = () => {
-    console.log(this);
     _playerScores.forEach((playerScore) => {
       playerScore.textContent = 0;
     });
   };
 
-  const refreshDisplayController = () =>
-    _board.forEach((position, index) => {
-      position.textContent = _board[index];
-    });
-
   const insertAt = (position, mark) => {
-    _board.item(position).textContent = mark;
+    _boardElement.children.item(position).textContent = mark;
   };
 
   const clearBoard = () => {
-    _board.forEach((position) => (position.textContent = ""));
+    _boardElement.children.forEach((position) => (position.textContent = ""));
   };
 
   const addClickListeners = () => {
@@ -99,10 +85,12 @@ const displayController = (() => {
   };
 
   const clickHandlerBoard = (e) => {
+    const currentPlayer = gameController.getCurrentlyPlaying();
     const positionIndex = e.target.dataset.position;
     if (!positionIndex) return;
     if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
       gameController.playTurn(positionIndex);
+      insertAt(positionIndex, currentPlayer.getMark());
       const winner = gameController.checkWinner();
       if (winner) {
         increaseScore(parseInt(winner) - 1);
@@ -113,12 +101,6 @@ const displayController = (() => {
   };
 
   return {
-    getBoard,
-    setBoard,
-    insertAt,
-    refreshDisplayController,
-    clickHandlerBoard,
-    clearBoard,
     addClickListeners,
     removeClickListeners,
   };
@@ -134,6 +116,8 @@ const gameController = (() => {
   const setPlayerTwo = (name, mark) => {
     _playerTwo = Player(name, mark);
   };
+
+  const getCurrentlyPlaying = () => _currentlyPlaying;
   const changeTurn = () => {
     _currentlyPlaying === _playerOne
       ? (_currentlyPlaying = _playerTwo)
@@ -141,7 +125,6 @@ const gameController = (() => {
   };
   const playTurn = (position) => {
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
-    displayController.insertAt(position, _currentlyPlaying.getMark());
   };
 
   const endRound = () => {
@@ -186,6 +169,7 @@ const gameController = (() => {
   return {
     setPlayerOne,
     setPlayerTwo,
+    getCurrentlyPlaying,
     changeTurn,
     playTurn,
     startGame,
