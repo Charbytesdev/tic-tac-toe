@@ -53,7 +53,6 @@ const gameBoard = (() => {
 })();
 
 const displayController = (() => {
-  const _board = document.querySelectorAll(".board-position");
   const _boardElement = document.getElementById("board");
   const _playerScores = document.querySelectorAll(".player-score");
 
@@ -73,7 +72,9 @@ const displayController = (() => {
   };
 
   const clearBoard = () => {
-    _boardElement.children.forEach((position) => (position.textContent = ""));
+    for (boardPosition of _boardElement.children) {
+      boardPosition.textContent = "";
+    }
   };
 
   const addClickListeners = () => {
@@ -93,8 +94,15 @@ const displayController = (() => {
       insertAt(positionIndex, currentPlayer.getMark());
       const winner = gameController.checkWinner();
       if (winner) {
-        increaseScore(parseInt(winner) - 1);
+        increaseScore(parseInt(winner.getName()) - 1);
+        clearBoard();
         gameController.endRound();
+        if (gameController.checkGameWinner(winner)) {
+          clearScores();
+          gameController.endGame();
+          gameController.startGame();
+        }
+        gameController.startRound();
       }
       gameController.changeTurn();
     }
@@ -107,9 +115,9 @@ const displayController = (() => {
 })();
 
 const gameController = (() => {
-  let _playerOne = Player(null, null);
-  let _playerTwo = Player(null, null);
-  let _currentlyPlaying = Player(null, null);
+  let _playerOne = null;
+  let _playerTwo = null;
+  let _currentlyPlaying = null;
   const setPlayerOne = (name, mark) => {
     _playerOne = Player(name, mark);
   };
@@ -129,11 +137,13 @@ const gameController = (() => {
 
   const startRound = () => {
     _currentlyPlaying = _playerOne;
+    gameBoard.clear();
+
     displayController.addClickListeners();
   };
 
   const endRound = () => {
-    displayController.removeClickListeners();
+    gameBoard.clear();
   };
 
   const checkWinner = () => {
@@ -158,15 +168,25 @@ const gameController = (() => {
         board[win[1]] === board[win[2]]
       ) {
         _currentlyPlaying.increaseScore();
-        return _currentlyPlaying.getName();
+        return _currentlyPlaying;
       }
     }
+  };
+
+  const checkGameWinner = (winner) => {
+    if (winner.getScore() >= 3) return true;
+    return false;
   };
 
   const startGame = () => {
     setPlayerOne("1", "x");
     setPlayerTwo("2", "o");
     startRound();
+  };
+
+  const endGame = () => {
+    setPlayerOne(null, null);
+    setPlayerTwo(null, null);
   };
 
   return {
@@ -176,7 +196,10 @@ const gameController = (() => {
     changeTurn,
     playTurn,
     startGame,
+    endGame,
     checkWinner,
+    checkGameWinner,
+    startRound,
     endRound,
   };
 })();
