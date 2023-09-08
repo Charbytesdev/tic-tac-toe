@@ -94,7 +94,7 @@ const displayController = (() => {
       const winner = gameController.checkWinner();
       if (winner) {
         increaseScore(parseInt(winner) - 1);
-        removeClickListeners();
+        gameController.endRound();
       }
       gameController.changeTurn();
     }
@@ -125,6 +125,11 @@ const gameController = (() => {
   };
   const playTurn = (position) => {
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
+  };
+
+  const startRound = () => {
+    _currentlyPlaying = _playerOne;
+    displayController.addClickListeners();
   };
 
   const endRound = () => {
@@ -161,9 +166,7 @@ const gameController = (() => {
   const startGame = () => {
     setPlayerOne("1", "x");
     setPlayerTwo("2", "o");
-    _currentlyPlaying = _playerOne;
-
-    displayController.addClickListeners();
+    startRound();
   };
 
   return {
