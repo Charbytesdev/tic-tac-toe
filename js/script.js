@@ -106,6 +106,7 @@ const displayController = (() => {
       }
       gameController.changeTurn();
     }
+    if (gameController.checkTie()) clearBoard();
   };
 
   return {
@@ -144,6 +145,15 @@ const gameController = (() => {
 
   const endRound = () => {
     gameBoard.clear();
+  };
+
+  const checkTie = () => {
+    if (gameBoard.getSize() >= 9 && !gameController.checkWinner()) {
+      endRound();
+      startRound();
+      return true;
+    }
+    return false;
   };
 
   const checkWinner = () => {
@@ -199,6 +209,7 @@ const gameController = (() => {
     endGame,
     checkWinner,
     checkGameWinner,
+    checkTie,
     startRound,
     endRound,
   };
