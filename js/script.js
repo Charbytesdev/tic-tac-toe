@@ -58,6 +58,7 @@ const gameBoard = (() => {
 
 const displayController = (() => {
   const _board = document.querySelectorAll(".board-position");
+  const _boardElement = document.getElementById("board");
   const _playerScores = document.querySelectorAll(".player-score");
   const getBoard = () => _board;
   const setBoard = (board) => {
@@ -70,6 +71,7 @@ const displayController = (() => {
   };
 
   const clearScores = () => {
+    console.log(this);
     _playerScores.forEach((playerScore) => {
       playerScore.textContent = 0;
     });
@@ -88,19 +90,23 @@ const displayController = (() => {
     _board.forEach((position) => (position.textContent = ""));
   };
 
-  const addEventListeners = () => {
-    _board.forEach((position) => {
-      position.addEventListener("click", () => clickHandlerBoard(position));
-    });
+  const addClickListeners = () => {
+    _boardElement.addEventListener("click", clickHandlerBoard);
   };
 
-  const clickHandlerBoard = (position) => {
-    const positionIndex = position.classList[1].split("-")[1] - 1;
+  const removeClickListeners = () => {
+    _boardElement.removeEventListener("click", clickHandlerBoard);
+  };
+
+  const clickHandlerBoard = (e) => {
+    const positionIndex = e.target.dataset.position;
+    if (!positionIndex) return;
     if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
       gameController.playTurn(positionIndex);
       const winner = gameController.checkWinner();
       if (winner) {
         increaseScore(parseInt(winner) - 1);
+        removeClickListeners();
       }
       gameController.changeTurn();
     }
@@ -113,7 +119,8 @@ const displayController = (() => {
     refreshDisplayController,
     clickHandlerBoard,
     clearBoard,
-    addEventListeners,
+    addClickListeners,
+    removeClickListeners,
   };
 })();
 
@@ -136,6 +143,11 @@ const gameController = (() => {
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
     displayController.insertAt(position, _currentlyPlaying.getMark());
   };
+
+  const endRound = () => {
+    displayController.removeClickListeners();
+  };
+
   const checkWinner = () => {
     const winnerCombs = [
       //rows
@@ -168,7 +180,7 @@ const gameController = (() => {
     setPlayerTwo("2", "o");
     _currentlyPlaying = _playerOne;
 
-    displayController.addEventListeners();
+    displayController.addClickListeners();
   };
 
   return {
@@ -178,6 +190,7 @@ const gameController = (() => {
     playTurn,
     startGame,
     checkWinner,
+    endRound,
   };
 })();
 
