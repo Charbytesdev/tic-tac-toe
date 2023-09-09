@@ -10,23 +10,36 @@
 </head>
 
 <body>
-    <div class="header">
-        <div>player 1</div>
-        <div>player 2</div>
-        <div class="player-score">0</div>
-        <div class="player-score">0</div>
+    <div id="start-screen" class="screen">
+        <div class="set-name">
+            <label for="p1-name">Player 1 Name:</label>
+            <input id="p1-name-input" data-id="0" type="text">
+        </div>
+        <button id="start-btn">Start Game</button>
+        <div class="set-name">
+            <label for="p2-name">Player 2 Name:</label>
+            <input id="p2-name-input" data-id="1" type="text">
+        </div>
     </div>
-    </div>
-    <div class="board" id="board">
-        <div class="board-position" data-position="0"></div>
-        <div class="board-position" data-position="1"></div>
-        <div class="board-position" data-position="2"></div>
-        <div class="board-position" data-position="3"></div>
-        <div class="board-position" data-position="4"></div>
-        <div class="board-position" data-position="5"></div>
-        <div class="board-position" data-position="6"></div>
-        <div class="board-position" data-position="7"></div>
-        <div class="board-position" data-position="8"></div>
+
+    <div id="game-screen" class="screen">
+        <div class=" header">
+            <div id="p1-name"></div>
+            <div id="p2-name"></div>
+            <div class="player-score">0</div>
+            <div class="player-score">0</div>
+        </div>
+        <div class="board" id="board">
+            <div class="board-position" data-position="0"></div>
+            <div class="board-position" data-position="1"></div>
+            <div class="board-position" data-position="2"></div>
+            <div class="board-position" data-position="3"></div>
+            <div class="board-position" data-position="4"></div>
+            <div class="board-position" data-position="5"></div>
+            <div class="board-position" data-position="6"></div>
+            <div class="board-position" data-position="7"></div>
+            <div class="board-position" data-position="8"></div>
+        </div>
     </div>
 
 </body>

@@ -1,9 +1,17 @@
+const playerIdSetter = (() => {
+  let id = 0;
+  generateId = () => id++;
+  return { generateId };
+})();
+
 const Player = (name, mark) => {
   let _name = name;
   let _mark = mark;
+  const _id = playerIdSetter.generateId();
   let _score = 0;
   const getName = () => _name;
   const getMark = () => _mark;
+  const getId = () => _id;
   const getScore = () => _score;
   const increaseScore = () => {
     _score++;
@@ -12,6 +20,7 @@ const Player = (name, mark) => {
   return {
     getName,
     getMark,
+    getId,
     getScore,
     increaseScore,
   };
@@ -52,6 +61,59 @@ const gameBoard = (() => {
   };
 })();
 
+const gameDisplay = (() => {
+  const _gameScreen = document.getElementById("game-screen");
+  const _playerOneName = document.getElementById("p1-name");
+  const _playerTwoName = document.getElementById("p2-name");
+
+  const enable = () => {
+    _gameScreen.style.display = "flex";
+  };
+
+  const disable = () => {
+    _gameScreen.style.display = "none";
+  };
+
+  const setPlayerOneName = (name) => {
+    _playerOneName.textContent = name;
+  };
+
+  const setPlayerTwoName = (name) => {
+    _playerTwoName.textContent = name;
+  };
+
+  return { enable, disable, setPlayerOneName, setPlayerTwoName };
+})();
+
+const startDisplay = (() => {
+  const _playerOneNameInput = document.getElementById("p1-name-input");
+  const _playerTwoNameInput = document.getElementById("p2-name-input");
+
+  const _startButton = document.getElementById("start-btn");
+
+  const _startScreen = document.getElementById("start-screen");
+
+  _startButton.onclick = () => {
+    gameDisplay.setPlayerOneName(_playerOneNameInput.value);
+    gameDisplay.setPlayerTwoName(_playerTwoNameInput.value);
+
+    gameController.setPlayerOne(_playerOneNameInput.value, "x");
+    gameController.setPlayerTwo(_playerTwoNameInput.value, "o");
+    gameController.startGame();
+    disable();
+    gameDisplay.enable();
+  };
+
+  const enable = () => {
+    _startScreen.style.display = "flex";
+  };
+
+  const disable = () => {
+    _startScreen.style.display = "none";
+  };
+  return { enable, disable };
+})();
+
 const displayController = (() => {
   const _boardElement = document.getElementById("board");
   const _playerScores = document.querySelectorAll(".player-score");
@@ -85,28 +147,34 @@ const displayController = (() => {
     _boardElement.removeEventListener("click", clickHandlerBoard);
   };
 
-  const clickHandlerBoard = (e) => {
+  const playTurn = (position) => {
     const currentPlayer = gameController.getCurrentlyPlaying();
-    const positionIndex = e.target.dataset.position;
-    if (!positionIndex) return;
-    if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[positionIndex]) {
-      gameController.playTurn(positionIndex);
-      insertAt(positionIndex, currentPlayer.getMark());
-      const winner = gameController.checkWinner();
-      if (winner) {
-        increaseScore(parseInt(winner.getName()) - 1);
-        clearBoard();
-        gameController.endRound();
-        if (gameController.checkGameWinner(winner)) {
-          clearScores();
-          gameController.endGame();
-          gameController.startGame();
-        }
-        gameController.startRound();
-      }
+    insertAt(position, currentPlayer.getMark());
+
+    const winner = gameController.isRoundWon();
+    const gameWinner = gameController.isGameWon();
+    const tie = gameController.isTie();
+
+    if (gameWinner) {
+      clearScores();
+      gameController.endGame();
+    } else if (winner || tie) {
+      clearBoard();
+      gameBoard.clear();
+      gameController.startRound();
+      if (winner) increaseScore(currentPlayer.getId());
+    } else {
       gameController.changeTurn();
     }
-    if (gameController.checkTie()) clearBoard();
+  };
+
+  const clickHandlerBoard = (e) => {
+    const position = e.target.dataset.position;
+    if (!position) return;
+    if (gameBoard.getSize() < 9 && !gameBoard.getBoard()[position]) {
+      gameController.playTurn(position);
+      playTurn(position);
+    }
   };
 
   return {
@@ -127,6 +195,9 @@ const gameController = (() => {
   };
 
   const getCurrentlyPlaying = () => _currentlyPlaying;
+  const setCurrentlyPlaying = (player) => {
+    _currentlyPlaying = player;
+  };
   const changeTurn = () => {
     _currentlyPlaying === _playerOne
       ? (_currentlyPlaying = _playerTwo)
@@ -137,26 +208,23 @@ const gameController = (() => {
   };
 
   const startRound = () => {
-    _currentlyPlaying = _playerOne;
     gameBoard.clear();
-
     displayController.addClickListeners();
+    _currentlyPlaying = _playerOne;
   };
 
   const endRound = () => {
-    gameBoard.clear();
+    displayController.removeClickListeners();
   };
 
-  const checkTie = () => {
-    if (gameBoard.getSize() >= 9 && !gameController.checkWinner()) {
-      endRound();
-      startRound();
+  const isTie = () => {
+    if (gameBoard.getSize() >= 9 && !gameController.isRoundWon()) {
       return true;
     }
     return false;
   };
 
-  const checkWinner = () => {
+  const isRoundWon = () => {
     const winnerCombs = [
       //rows
       [0, 1, 2],
@@ -178,41 +246,36 @@ const gameController = (() => {
         board[win[1]] === board[win[2]]
       ) {
         _currentlyPlaying.increaseScore();
-        return _currentlyPlaying;
+        return true;
       }
     }
+    return false;
   };
 
-  const checkGameWinner = (winner) => {
-    if (winner.getScore() >= 3) return true;
+  const isGameWon = () => {
+    if (_currentlyPlaying.getScore() >= 3) return true;
     return false;
   };
 
   const startGame = () => {
-    setPlayerOne("1", "x");
-    setPlayerTwo("2", "o");
     startRound();
   };
 
-  const endGame = () => {
-    setPlayerOne(null, null);
-    setPlayerTwo(null, null);
-  };
+  const endGame = () => {};
 
   return {
     setPlayerOne,
     setPlayerTwo,
+    setCurrentlyPlaying,
     getCurrentlyPlaying,
     changeTurn,
     playTurn,
     startGame,
     endGame,
-    checkWinner,
-    checkGameWinner,
-    checkTie,
+    isRoundWon,
+    isGameWon,
+    isTie,
     startRound,
     endRound,
   };
 })();
-
-gameController.startGame();

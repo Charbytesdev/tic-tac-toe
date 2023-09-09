@@ -17,7 +17,40 @@ html {
 
 body {
   display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#start-screen {
+  display: flex;
+  gap: 15rem;
+}
+
+.set-name {
+  display: flex;
   flex-direction: column;
+  margin-bottom: 5rem;
+}
+
+.start-btn-container {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5rem;
+}
+
+#start-btn {
+  font-size: 2rem;
+  justify-self: center;
+  align-self: center;
+  border-radius: 10px;
+}
+
+#game-screen {
+  display: none; /*flex*/
+  flex-direction: column;
+  gap: 2.5rem;
 }
 
 .header {
