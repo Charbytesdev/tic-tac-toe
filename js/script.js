@@ -102,6 +102,7 @@ const startDisplay = (() => {
     gameController.startRound();
     disable();
     gameDisplay.enable();
+    displayController.addClickListeners();
   };
 
   const enable = () => {
@@ -156,6 +157,7 @@ const displayController = (() => {
     const tie = gameController.isTie();
 
     if (gameWinner) {
+      increaseScore(currentPlayer.getId());
       removeClickListeners();
     } else if (winner || tie) {
       clearBoard();
@@ -208,12 +210,7 @@ const gameController = (() => {
 
   const startRound = () => {
     gameBoard.clear();
-    displayController.addClickListeners();
     _currentlyPlaying = _playerOne;
-  };
-
-  const endRound = () => {
-    displayController.removeClickListeners();
   };
 
   const isTie = () => {
@@ -267,6 +264,5 @@ const gameController = (() => {
     isGameWon,
     isTie,
     startRound,
-    endRound,
   };
 })();
