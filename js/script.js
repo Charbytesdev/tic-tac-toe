@@ -99,7 +99,7 @@ const startDisplay = (() => {
 
     gameController.setPlayerOne(_playerOneNameInput.value, "x");
     gameController.setPlayerTwo(_playerTwoNameInput.value, "o");
-    gameController.startGame();
+    gameController.startRound();
     disable();
     gameDisplay.enable();
   };
@@ -156,8 +156,7 @@ const displayController = (() => {
     const tie = gameController.isTie();
 
     if (gameWinner) {
-      clearScores();
-      gameController.endGame();
+      removeClickListeners();
     } else if (winner || tie) {
       clearBoard();
       gameBoard.clear();
@@ -257,12 +256,6 @@ const gameController = (() => {
     return false;
   };
 
-  const startGame = () => {
-    startRound();
-  };
-
-  const endGame = () => {};
-
   return {
     setPlayerOne,
     setPlayerTwo,
@@ -270,8 +263,6 @@ const gameController = (() => {
     getCurrentlyPlaying,
     changeTurn,
     playTurn,
-    startGame,
-    endGame,
     isRoundWon,
     isGameWon,
     isTie,
