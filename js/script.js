@@ -139,7 +139,7 @@ const endDisplay = (() => {
   };
 
   const setWinnerText = (winner) => {
-    _winnerText.textContent += winner;
+    _winnerText.textContent = `Winner: ${winner}`;
   };
 
   const enable = () => {
