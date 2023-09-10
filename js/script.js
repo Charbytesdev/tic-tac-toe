@@ -201,19 +201,22 @@ const displayController = (() => {
     const roundWon = gameController.isRoundWon();
     const tie = gameController.isTie();
 
-    if (roundWon || tie) {
+    if (tie) {
       clearBoard();
       gameController.resetRound();
     }
+    if (roundWon || tie) {
+      if (roundWon) {
+        increaseScore(currentPlayer.getId());
+        currentPlayer.increaseScore();
+        const gameWon = gameController.isGameWon();
 
-    if (roundWon) {
-      increaseScore(currentPlayer.getId());
-      currentPlayer.increaseScore();
-      const gameWon = gameController.isGameWon();
-
-      if (gameWon) {
-        endGame();
+        if (gameWon) {
+          endGame();
+        }
       }
+      clearBoard();
+      gameController.resetRound();
     } else {
       insertAt(position, currentPlayer.getMark());
       gameController.changeTurn();
