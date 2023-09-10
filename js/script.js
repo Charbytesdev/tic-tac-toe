@@ -1,6 +1,9 @@
 const playerIdSetter = (() => {
   let id = 0;
-  generateId = () => id++;
+  generateId = () => {
+    id < 2 ? id : (id = 0);
+    return id++;
+  };
   return { generateId };
 })();
 
