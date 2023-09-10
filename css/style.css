@@ -98,3 +98,28 @@ body {
   justify-content: center;
   place-items: center;
 }
+
+#end-screen {
+  display: none;
+  grid-template: 1fr 1fr 1fr /1fr;
+  gap: 12.5vh;
+  margin-bottom: 9rem;
+  place-items: center;
+}
+
+#winner-text {
+  font-size: 5rem;
+}
+
+.end-buttons {
+  display: flex;
+  gap: 2rem;
+}
+
+#play-again-btn,
+#change-players-btn {
+  text-transform: uppercase;
+  padding: 0.5rem 2rem;
+  font-size: 5rem;
+  border-radius: 25px;
+}

@@ -16,6 +16,9 @@ const Player = (name, mark) => {
   const increaseScore = () => {
     _score++;
   };
+  const resetScore = () => {
+    _score = 0;
+  };
 
   return {
     getName,
@@ -23,6 +26,7 @@ const Player = (name, mark) => {
     getId,
     getScore,
     increaseScore,
+    resetScore,
   };
 };
 
@@ -101,7 +105,7 @@ const startDisplay = (() => {
     gameController.setPlayerTwo(_playerTwoNameInput.value, "o");
     disable();
     gameDisplay.enable();
-    displayController.addClickListeners();
+    displayController.startGame();
   };
 
   const enable = () => {
@@ -112,6 +116,37 @@ const startDisplay = (() => {
     _startScreen.style.display = "none";
   };
   return { enable, disable };
+})();
+
+const endDisplay = (() => {
+  const _winnerText = document.getElementById("winner-text");
+  const _playAgainButton = document.getElementById("play-again-btn");
+  const _changePlayersButton = document.getElementById("change-players-btn");
+  const _endScreen = document.getElementById("end-screen");
+
+  _playAgainButton.onclick = () => {
+    disable();
+    gameDisplay.enable();
+    displayController.startGame();
+  };
+
+  _changePlayersButton.onclick = () => {
+    disable();
+    startDisplay.enable();
+  };
+
+  const setWinnerText = (winner) => {
+    _winnerText.textContent += winner;
+  };
+
+  const enable = () => {
+    _endScreen.style.display = "grid";
+  };
+
+  const disable = () => {
+    _endScreen.style.display = "none";
+  };
+  return { setWinnerText, enable, disable };
 })();
 
 const displayController = (() => {
@@ -127,6 +162,19 @@ const displayController = (() => {
     _playerScores.forEach((playerScore) => {
       playerScore.textContent = 0;
     });
+  };
+
+  const startGame = () => {
+    clearScores();
+    addClickListeners();
+    gameController.startGame();
+  };
+
+  const endGame = () => {
+    removeClickListeners();
+    gameDisplay.disable();
+    endDisplay.setWinnerText(gameController.getCurrentlyPlaying().getName());
+    endDisplay.enable();
   };
 
   const insertAt = (position, mark) => {
@@ -151,16 +199,20 @@ const displayController = (() => {
     const currentPlayer = gameController.getCurrentlyPlaying();
 
     const roundWon = gameController.isRoundWon();
-    const gameWon = gameController.isGameWon();
     const tie = gameController.isTie();
 
-    if (gameWon) removeClickListeners();
-    else if (roundWon || tie) {
+    if (roundWon || tie) {
       clearBoard();
       gameController.resetRound();
-      if (roundWon) {
-        increaseScore(currentPlayer.getId());
-        currentPlayer.increaseScore();
+    }
+
+    if (roundWon) {
+      increaseScore(currentPlayer.getId());
+      currentPlayer.increaseScore();
+      const gameWon = gameController.isGameWon();
+
+      if (gameWon) {
+        endGame();
       }
     } else {
       insertAt(position, currentPlayer.getMark());
@@ -178,8 +230,8 @@ const displayController = (() => {
   };
 
   return {
-    addClickListeners,
-    removeClickListeners,
+    startGame,
+    endGame,
   };
 })();
 
@@ -204,6 +256,16 @@ const gameController = (() => {
   };
   const playTurn = (position) => {
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
+  };
+
+  const clearScores = () => {
+    _playerOne.resetScore();
+    _playerTwo.resetScore();
+  };
+
+  const startGame = () => {
+    clearScores();
+    resetRound();
   };
 
   const resetRound = () => {
@@ -260,5 +322,6 @@ const gameController = (() => {
     isRoundWon,
     isGameWon,
     isTie,
+    startGame,
   };
 })();
