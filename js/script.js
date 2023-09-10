@@ -99,7 +99,6 @@ const startDisplay = (() => {
 
     gameController.setPlayerOne(_playerOneNameInput.value, "x");
     gameController.setPlayerTwo(_playerTwoNameInput.value, "o");
-    gameController.startRound();
     disable();
     gameDisplay.enable();
     displayController.addClickListeners();
@@ -150,21 +149,21 @@ const displayController = (() => {
 
   const playTurn = (position) => {
     const currentPlayer = gameController.getCurrentlyPlaying();
-    insertAt(position, currentPlayer.getMark());
 
-    const winner = gameController.isRoundWon();
-    const gameWinner = gameController.isGameWon();
+    const roundWon = gameController.isRoundWon();
+    const gameWon = gameController.isGameWon();
     const tie = gameController.isTie();
 
-    if (gameWinner) {
-      increaseScore(currentPlayer.getId());
-      removeClickListeners();
-    } else if (winner || tie) {
+    if (gameWon) removeClickListeners();
+    else if (roundWon || tie) {
       clearBoard();
-      gameBoard.clear();
-      gameController.startRound();
-      if (winner) increaseScore(currentPlayer.getId());
+      gameController.resetRound();
+      if (roundWon) {
+        increaseScore(currentPlayer.getId());
+        currentPlayer.increaseScore();
+      }
     } else {
+      insertAt(position, currentPlayer.getMark());
       gameController.changeTurn();
     }
   };
@@ -190,15 +189,14 @@ const gameController = (() => {
   let _currentlyPlaying = null;
   const setPlayerOne = (name, mark) => {
     _playerOne = Player(name, mark);
+    _currentlyPlaying = _playerOne;
   };
   const setPlayerTwo = (name, mark) => {
     _playerTwo = Player(name, mark);
   };
 
   const getCurrentlyPlaying = () => _currentlyPlaying;
-  const setCurrentlyPlaying = (player) => {
-    _currentlyPlaying = player;
-  };
+
   const changeTurn = () => {
     _currentlyPlaying === _playerOne
       ? (_currentlyPlaying = _playerTwo)
@@ -208,7 +206,7 @@ const gameController = (() => {
     gameBoard.insertAt(position, _currentlyPlaying.getMark());
   };
 
-  const startRound = () => {
+  const resetRound = () => {
     gameBoard.clear();
     _currentlyPlaying = _playerOne;
   };
@@ -241,7 +239,6 @@ const gameController = (() => {
         board[win[0]] === board[win[1]] &&
         board[win[1]] === board[win[2]]
       ) {
-        _currentlyPlaying.increaseScore();
         return true;
       }
     }
@@ -256,13 +253,12 @@ const gameController = (() => {
   return {
     setPlayerOne,
     setPlayerTwo,
-    setCurrentlyPlaying,
     getCurrentlyPlaying,
     changeTurn,
+    resetRound,
     playTurn,
     isRoundWon,
     isGameWon,
     isTie,
-    startRound,
   };
 })();
