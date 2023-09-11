@@ -7,6 +7,12 @@
     format("woff2");
 }
 
+:root {
+  --neon-green: #39ff14;
+  --neon-blue: #1b03a3;
+  --neon-purple: #bc13fe;
+}
+
 *,
 ::after,
 ::before {
@@ -44,13 +50,29 @@ body {
 }
 
 .game-title {
+  color: var(--neon-purple);
   font-size: 8rem;
 }
 
-.set-name {
+.set-name-container {
   display: flex;
   flex-direction: column;
   margin-bottom: 5rem;
+}
+
+.player-name-label {
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.player-name-input {
+  outline: none;
+  background-color: black;
+  border: solid 0.3rem var(--neon-purple);
+  border-radius: 20px;
+  color: white;
+  font-weight: 700;
+  padding: 0.5rem 1rem;
 }
 
 .start-btn-container {
@@ -63,7 +85,9 @@ body {
 
 #start-btn {
   font-family: "Black Ops One", sans-serif;
-
+  color: var(--neon-green);
+  background-color: var(--neon-blue);
+  box-shadow: 0px 0px 10px 5px var(--neon-purple);
   font-size: 2rem;
   justify-self: center;
   align-self: center;
