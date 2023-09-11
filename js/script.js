@@ -112,7 +112,7 @@ const startDisplay = (() => {
   };
 
   const enable = () => {
-    _startScreen.style.display = "flex";
+    _startScreen.style.display = "grid";
   };
 
   const disable = () => {

@@ -45,6 +45,7 @@ body {
   display: grid;
   grid-template: 1fr 1fr 1fr/ 1fr;
   place-items: center;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
 .start-interaction {
@@ -54,7 +55,6 @@ body {
 
 .game-title {
   font-size: 8rem;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
 .set-name-container {
@@ -95,6 +95,7 @@ body {
   justify-self: center;
   align-self: center;
   border-radius: 10px;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
 #game-screen {
