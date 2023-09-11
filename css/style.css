@@ -1,3 +1,12 @@
+@font-face {
+  font-display: swap;
+  font-family: "Black Ops One";
+  font-style: normal;
+  font-weight: 400;
+  src: url("../assets/fonts/black-ops-one-v20-latin-regular.woff2")
+    format("woff2");
+}
+
 *,
 ::after,
 ::before {
@@ -22,6 +31,7 @@ body {
 }
 
 #start-screen {
+  font-family: "Black Ops One", sans-serif;
   height: 100%;
   display: grid;
   grid-template: 1fr 1fr 1fr/ 1fr;
@@ -52,6 +62,8 @@ body {
 }
 
 #start-btn {
+  font-family: "Black Ops One", sans-serif;
+
   font-size: 2rem;
   justify-self: center;
   align-self: center;
