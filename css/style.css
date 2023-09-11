@@ -22,8 +22,19 @@ body {
 }
 
 #start-screen {
+  height: 100%;
+  display: grid;
+  grid-template: 1fr 1fr 1fr/ 1fr;
+  place-items: center;
+}
+
+.start-interaction {
   display: flex;
   gap: 15rem;
+}
+
+.game-title {
+  font-size: 8rem;
 }
 
 .set-name {
