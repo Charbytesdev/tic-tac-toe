@@ -53,8 +53,8 @@ body {
 }
 
 .game-title {
-  color: var(--neon-purple);
   font-size: 8rem;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000;
 }
 
 .set-name-container {
